@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empanada Quest — Aprendé a cocinar empanadas criollas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="crt-overlay"></div>
+
+  <!-- Audio (loop durante todo el juego) -->
+  <audio id="audio-milonga" src="music/milonga.mp3" loop preload="auto"></audio>
+  <audio id="audio-cumbia"  src="music/cumbia.mp3"  loop preload="auto"></audio>
+
+  <!-- Reproductor flotante -->
+  <div class="music-player" id="music-player">
+    <div class="music-player__tracks">
+      <button class="music-btn" data-track="milonga" type="button">🪕 Milonga</button>
+      <button class="music-btn" data-track="cumbia"  type="button">🎺 Cumbia</button>
+    </div>
+    <button class="music-btn music-btn--mute" id="btn-mute" type="button" title="Silenciar">🔊</button>
+    <input id="volume" class="music-volume" type="range" min="0" max="100" value="55" aria-label="Volumen" />
+  </div>
+
+  <div class="app">
+    <header class="hud">
+      <h1 class="hud__title">🥟 EMPANADA QUEST</h1>
+      <p class="hud__tag">Hackaton Filadd · Mendoza</p>
+    </header>
+
+    <main class="screens">
+
+      <!-- 1. Welcome -->
+      <section class="screen screen--welcome is-active" data-screen="welcome">
+        <h2 class="screen__title">¿Quién cocina hoy?</h2>
+
+        <label class="field">
+          <span class="field__label">Tu nombre</span>
+          <input id="input-name" class="field__input" type="text" maxlength="20" placeholder="Matute" autocomplete="off" />
+        </label>
+
+        <div class="field">
+          <span class="field__label">¿De dónde sos?</span>
+          <div class="map-wrap">
+            <img class="sprite map-wrap__bg" src="assets/sprites/argentina.png" alt="" aria-hidden="true" />
+            <div id="map-grid" class="map-grid" aria-label="Mapa de Argentina"></div>
+          </div>
+          <p class="field__hint">Tocá tu provincia.</p>
+        </div>
+
+        <div class="field">
+          <span class="field__label">Nivel de cocina</span>
+          <div class="skill-cards" id="skill-group">
+            <label class="skill-card">
+              <input type="radio" name="skill" value="basico" />
+              <img src="assets/sprites/avatar-basico.png" alt="Básico" class="sprite skill-card__sprite" />
+              <span class="skill-card__label">Básico</span>
+            </label>
+            <label class="skill-card">
+              <input type="radio" name="skill" value="intermedio" />
+              <img src="assets/sprites/avatar-intermedio.png" alt="Intermedio" class="sprite skill-card__sprite" />
+              <span class="skill-card__label">Intermedio</span>
+            </label>
+            <label class="skill-card">
+              <input type="radio" name="skill" value="avanzado" />
+              <img src="assets/sprites/avatar-avanzado.png" alt="Avanzado" class="sprite skill-card__sprite" />
+              <span class="skill-card__label">Avanzado</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field__label">Banda sonora</span>
+          <div class="radio-group">
+            <label class="radio"><input type="radio" name="welcome-track" value="milonga" /><span>🪕 Milonga</span></label>
+            <label class="radio"><input type="radio" name="welcome-track" value="cumbia"  /><span>🎺 Cumbia</span></label>
+          </div>
+          <p class="field__hint">Se puede cambiar en cualquier momento con el control de abajo.</p>
+        </div>
+
+        <button id="btn-to-recipe" class="btn btn--primary" disabled>Siguiente ▶</button>
+      </section>
+
+      <!-- 2. Recipe selection -->
+      <section class="screen screen--recipe" data-screen="recipe">
+        <h2 class="screen__title">Elegí la receta</h2>
+
+        <div class="recipe-card recipe-card--selected">
+          <img src="assets/sprites/empanada-cocida.png" alt="Empanada" class="sprite recipe-card__sprite" />
+          <div class="recipe-card__info">
+            <h3>Empanadas criollas</h3>
+            <p>De carne cortada a cuchillo. Clásicas de Argentina.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field__label">¿Cómo las cocinamos?</span>
+          <div class="radio-group" id="style-group">
+            <label class="radio"><input type="radio" name="style" value="horno" checked /><span>🔥 Al horno</span></label>
+            <label class="radio"><input type="radio" name="style" value="fritas" /><span>🍳 Fritas</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field__label">Pasas de uva</span>
+          <div class="radio-group" id="raisins-group">
+            <label class="radio"><input type="radio" name="raisins" value="no" checked /><span>Sin pasas</span></label>
+            <label class="radio"><input type="radio" name="raisins" value="si" /><span>Con pasas (norte)</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field__label">¿Cuántas hacemos?</span>
+          <div class="radio-group" id="count-mode-group">
+            <label class="radio"><input type="radio" name="countMode" value="empanadas" checked /><span>Por empanadas</span></label>
+            <label class="radio"><input type="radio" name="countMode" value="comensales" /><span>Por comensales</span></label>
+          </div>
+
+          <div id="count-empanadas" class="count-input">
+            <input id="input-empanadas" type="range" min="6" max="48" step="6" value="24" />
+            <div class="count-readout"><span id="readout-empanadas">24</span> empanadas</div>
+          </div>
+
+          <div id="count-comensales" class="count-input is-hidden">
+            <input id="input-comensales" type="number" min="1" max="12" value="6" />
+            <div class="count-readout"><span id="readout-comensales">24</span> empanadas (4 por comensal)</div>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <button class="btn btn--ghost" data-back="welcome">◀ Volver</button>
+          <button id="btn-to-ingredients" class="btn btn--primary">Ver ingredientes ▶</button>
+        </div>
+      </section>
+
+      <!-- 3. Ingredients -->
+      <section class="screen screen--ingredients" data-screen="ingredients">
+        <h2 class="screen__title">Ingredientes</h2>
+        <p class="screen__sub" id="ingredients-sub">Para 24 empanadas</p>
+        <div id="ingredients-list" class="ingredients-list"></div>
+
+        <div class="nav-row">
+          <button class="btn btn--ghost" data-back="recipe">◀ Volver</button>
+          <button id="btn-to-shopping" class="btn btn--primary">¿Dónde consigo esto? ▶</button>
+        </div>
+      </section>
+
+      <!-- 4. Shopping suggestions -->
+      <section class="screen screen--shopping" data-screen="shopping">
+        <h2 class="screen__title">¿Dónde comprar?</h2>
+
+        <label class="celiac-check">
+          <input type="checkbox" id="input-celiac" />
+          <span>¿Algún comensal es celíaco? 🌾</span>
+        </label>
+        <p id="celiac-note" class="celiac-note is-hidden">Las tapas y la harina aparecen como <b>sin TACC</b>. Buscá el logo oficial.</p>
+
+        <h3 class="section-title">🏪 Comercios cerca tuyo</h3>
+        <div id="stores-list" class="stores-list"></div>
+
+        <h3 class="section-title">🥟 Comparativa de tapas (abril 2026)</h3>
+        <p class="note">Precios estimados en ARS.</p>
+        <div id="tapas-table" class="tapas-table"></div>
+
+        <h3 class="section-title">👨‍🍳 Recomendaciones</h3>
+        <div id="recommendations" class="recommendations"></div>
+
+        <div class="nav-row">
+          <button class="btn btn--ghost" data-back="ingredients">◀ Volver</button>
+          <button id="btn-to-checklist" class="btn btn--primary">Armar lista de compras ▶</button>
+        </div>
+      </section>
+
+      <!-- 5. Shopping checklist -->
+      <section class="screen screen--checklist" data-screen="checklist">
+        <h2 class="screen__title">Lista de compras</h2>
+        <p class="screen__sub">Tildá a medida que vayas consiguiendo las cosas.</p>
+
+        <div class="progress">
+          <div id="progress-bar" class="progress__bar"></div>
+          <span id="progress-label" class="progress__label">0 / 0</span>
+        </div>
+
+        <div id="checklist" class="checklist"></div>
+
+        <div class="nav-row">
+          <button class="btn btn--ghost" data-back="shopping">◀ Volver</button>
+          <button id="btn-to-kitchen" class="btn btn--primary" disabled>A la cocina ▶</button>
+        </div>
+      </section>
+
+      <!-- 6. Kitchen -->
+      <section class="screen screen--kitchen" data-screen="kitchen">
+        <h2 class="screen__title">La cocina</h2>
+
+        <div class="kitchen-scene">
+          <img id="kitchen-gaucho" class="sprite kitchen-scene__gaucho" src="assets/sprites/avatar-intermedio.png" alt="Gaucho" />
+          <div class="kitchen-scene__bubble" id="kitchen-bubble">¡Arrancamos!</div>
+          <div class="kitchen-scene__bench">
+            <img class="sprite kitchen-scene__item" src="assets/sprites/tabla.png" alt="Tabla" />
+            <img class="sprite kitchen-scene__item" src="assets/sprites/cuchillo.png" alt="Cuchillo" />
+            <img class="sprite kitchen-scene__item" src="assets/sprites/olla.png" alt="Olla" />
+            <img class="sprite kitchen-scene__item" src="assets/sprites/bowl-relleno.png" alt="Bowl" />
+            <img class="sprite kitchen-scene__item" src="assets/sprites/sarten.png" alt="Sartén" />
+            <img class="sprite kitchen-scene__item" src="assets/sprites/fuego.png" alt="Fuego" />
+          </div>
+        </div>
+
+        <h3 class="section-title">Utensilios</h3>
+        <ul id="utensils-list" class="utensils-list"></ul>
+
+        <div class="nav-row">
+          <button class="btn btn--ghost" data-back="checklist">◀ Volver</button>
+          <button id="btn-start-cooking" class="btn btn--primary">¡Empezar a cocinar! ▶</button>
+        </div>
+      </section>
+
+      <!-- 7. Cooking with timer -->
+      <section class="screen screen--cooking" data-screen="cooking">
+        <h2 class="screen__title">¡A cocinar!</h2>
+        <p class="note" title="Es tiempo de juego, no real">⏱ Tiempo total: <span id="total-time">0</span>s (tiempo de juego — no real).</p>
+
+        <div class="progress">
+          <div id="cook-bar" class="progress__bar"></div>
+          <span id="cook-label" class="progress__label">00:00</span>
+        </div>
+
+        <ol id="steps-list" class="steps-list"></ol>
+
+        <div class="nav-row">
+          <button id="btn-pause" class="btn btn--ghost">⏸ Pausar</button>
+          <button id="btn-skip"  class="btn btn--ghost">⏭ Saltar paso</button>
+        </div>
+      </section>
+
+      <!-- 8. Done -->
+      <section class="screen screen--done" data-screen="done">
+        <div class="done-hero">
+          <img src="assets/sprites/empanada-cocida.png" alt="Empanadas" class="sprite done-hero__sprite" />
+          <h2 id="done-title" class="screen__title">¡Listas!</h2>
+          <p id="done-message" class="done-message"></p>
+        </div>
+
+        <ul id="done-summary" class="done-summary"></ul>
+
+        <div class="nav-row">
+          <button id="btn-replay" class="btn btn--primary">🔁 Jugar de nuevo</button>
+          <button id="btn-share" class="btn btn--ghost">📋 Compartir</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/scaling.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/screens.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
