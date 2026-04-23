@@ -814,6 +814,14 @@ img, .sprite {
   margin: 0 auto 8px;
   animation: pop 600ms steps(4) infinite alternate;
 }
+.done-hero__avatar {
+  width: 80px;
+  height: 80px;
+  image-rendering: pixelated;
+  margin: 4px auto 0;
+  border: var(--pixel-half) solid var(--c-noche);
+  background: var(--c-pampa);
+}
 @keyframes pop {
   from { transform: scale(1); }
   to   { transform: scale(1.08); }

@@ -4,6 +4,7 @@ const state = {
   name: "",
   province: "",
   skill: "",               // "basico" | "intermedio" | "avanzado"
+  gender: "",              // "m" | "f"
   recipe: {
     style: "horno",        // "horno" | "fritas"
     raisins: false,
@@ -27,6 +28,7 @@ function saveState() {
       name: state.name,
       province: state.province,
       skill: state.skill,
+      gender: state.gender,
       recipe: state.recipe,
       celiac: state.celiac,
     }));
@@ -50,6 +52,7 @@ function resetState() {
   state.name = "";
   state.province = "";
   state.skill = "";
+  state.gender = "";
   state.recipe = { style: "horno", raisins: false, count: 24, countMode: "empanadas" };
   state.celiac = false;
   state.shopping = {};

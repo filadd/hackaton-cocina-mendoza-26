@@ -53,21 +53,29 @@
         </div>
 
         <div class="field">
+          <span class="field__label">¿Con qué avatar jugás?</span>
+          <div class="radio-group" id="gender-group">
+            <label class="radio"><input type="radio" name="gender" value="m" /><span>🧔 Él</span></label>
+            <label class="radio"><input type="radio" name="gender" value="f" /><span>👩 Ella</span></label>
+          </div>
+        </div>
+
+        <div class="field">
           <span class="field__label">Nivel de cocina</span>
           <div class="skill-cards" id="skill-group">
-            <label class="skill-card">
+            <label class="skill-card" data-skill="basico">
               <input type="radio" name="skill" value="basico" />
-              <img src="assets/sprites/avatar-basico.png" alt="Básico" class="sprite skill-card__sprite" />
+              <img alt="Básico" class="sprite skill-card__sprite" />
               <span class="skill-card__label">Básico</span>
             </label>
-            <label class="skill-card">
+            <label class="skill-card" data-skill="intermedio">
               <input type="radio" name="skill" value="intermedio" />
-              <img src="assets/sprites/avatar-intermedio.png" alt="Intermedio" class="sprite skill-card__sprite" />
+              <img alt="Intermedio" class="sprite skill-card__sprite" />
               <span class="skill-card__label">Intermedio</span>
             </label>
-            <label class="skill-card">
+            <label class="skill-card" data-skill="avanzado">
               <input type="radio" name="skill" value="avanzado" />
-              <img src="assets/sprites/avatar-avanzado.png" alt="Avanzado" class="sprite skill-card__sprite" />
+              <img alt="Avanzado" class="sprite skill-card__sprite" />
               <span class="skill-card__label">Avanzado</span>
             </label>
           </div>
@@ -241,6 +249,7 @@
       <section class="screen screen--done" data-screen="done">
         <div class="done-hero">
           <img src="assets/sprites/empanada-cocida.png" alt="Empanadas" class="sprite done-hero__sprite" />
+          <img src="assets/sprites/avatar-intermedio.png" alt="" class="sprite done-hero__avatar" />
           <h2 id="done-title" class="screen__title">¡Listas!</h2>
           <p id="done-message" class="done-message"></p>
         </div>

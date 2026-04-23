@@ -34,6 +34,14 @@ function wireEvents() {
       updateWelcomeButton();
     })
   );
+  $$("#gender-group input[name='gender']").forEach((r) =>
+    r.addEventListener("change", (e) => {
+      state.gender = e.target.value;
+      saveState();
+      refreshSkillAvatars();
+      updateWelcomeButton();
+    })
+  );
   $("#btn-to-recipe").addEventListener("click", () => showScreen("recipe"));
 
   // Recipe
@@ -87,6 +95,7 @@ function wireEvents() {
     $("#input-name").value = "";
     $$(".prov-tile").forEach((t) => t.classList.remove("is-selected"));
     $$("input[name='skill']").forEach((r) => (r.checked = false));
+    $$("input[name='gender']").forEach((r) => (r.checked = false));
     $("#input-celiac").checked = false;
     $("#celiac-note").classList.add("is-hidden");
     showScreen("welcome");

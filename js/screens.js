@@ -11,6 +11,13 @@ function spriteImg(name, alt = "", extra = "") {
   });
 }
 
+// Devuelve el src del avatar correcto según skill + género. Fallback a masculino.
+function avatarSrc(skill, gender) {
+  const sk = skill || "intermedio";
+  const suffix = gender === "f" ? "-f" : "";
+  return `assets/sprites/avatar-${sk}${suffix}.png`;
+}
+
 // Mapa: label del ingrediente → sprite (los condimentos no tienen sprite)
 const INGREDIENT_SPRITES = {
   "Carne vacuna (cortada a cuchillo)": "ing-carne",
@@ -73,7 +80,21 @@ function renderWelcome() {
     const r = document.querySelector(`input[name="skill"][value="${state.skill}"]`);
     if (r) r.checked = true;
   }
+  if (state.gender) {
+    const r = document.querySelector(`input[name="gender"][value="${state.gender}"]`);
+    if (r) r.checked = true;
+  }
+  refreshSkillAvatars();
   updateWelcomeButton();
+}
+
+// Actualiza el src de las 3 skill-cards según el género elegido.
+function refreshSkillAvatars() {
+  $$(".skill-card").forEach((card) => {
+    const skill = card.dataset.skill;
+    const img = card.querySelector(".skill-card__sprite");
+    if (img && skill) img.src = avatarSrc(skill, state.gender);
+  });
 }
 
 function selectProvince(prov) {
@@ -90,7 +111,7 @@ function highlightProvince(prov) {
 }
 
 function updateWelcomeButton() {
-  const ready = state.name.trim() && state.province && state.skill;
+  const ready = state.name.trim() && state.province && state.skill && state.gender;
   $("#btn-to-recipe").disabled = !ready;
   // Marcar la card del skill seleccionado
   $$(".skill-card").forEach((card) => {
@@ -307,11 +328,9 @@ function updateChecklistProgress() {
 // ---------- 6. Kitchen ----------
 function renderKitchen() {
   $("#kitchen-bubble").textContent = KITCHEN_VIBE[state.skill] || "¡A cocinar!";
-  // Avatar del gaucho según la habilidad elegida
+  // Avatar del gaucho/gaucha según habilidad + género
   const gauchoImg = $("#kitchen-gaucho");
-  if (gauchoImg) {
-    gauchoImg.src = `assets/sprites/avatar-${state.skill || "intermedio"}.png`;
-  }
+  if (gauchoImg) gauchoImg.src = avatarSrc(state.skill, state.gender);
 
   const list = $("#utensils-list");
   list.innerHTML = "";
@@ -466,6 +485,9 @@ function renderDone() {
   const styleLabel = state.recipe.style === "horno" ? "al horno" : "fritas";
   const name = state.name || "amigo/a";
   $("#done-title").textContent = `¡Bien ahí, ${name}!`;
+  // Avatar hero según género + skill
+  const heroImg = document.querySelector(".done-hero__avatar");
+  if (heroImg) heroImg.src = avatarSrc(state.skill, state.gender);
   $("#done-message").textContent = `Te quedaron ${state.recipe.count} empanadas ${styleLabel}${state.recipe.raisins ? " (con pasitas)" : ""}. ${DONE_VIBE[state.skill] || ""}`;
 
   const summary = $("#done-summary");
