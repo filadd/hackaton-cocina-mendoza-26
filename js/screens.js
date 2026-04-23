@@ -341,6 +341,8 @@ function openShopModal(shopId) {
   $("#shop-modal-vendor").textContent = shop.vendor;
   // Diálogo adaptado al lunfardo de la provincia (fallback al default del shop).
   $("#shop-modal-dialog").textContent = vendorLine(state.province, shop.id, state.gender) || shop.dialog;
+  // Avatar del usuario con su skill + género
+  $("#shop-modal-user-avatar").src = avatarSrc(state.skill, state.gender);
 
   const itemsContainer = $("#shop-modal-items");
   itemsContainer.innerHTML = "";

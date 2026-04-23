@@ -774,24 +774,51 @@ img, .sprite {
   padding: 6px 10px !important;
   font-size: 10px;
 }
+.shop-modal__scene {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+.shop-modal__avatar {
+  width: 76px;
+  height: 128px;
+  object-fit: cover;
+  object-position: top center;
+  image-rendering: pixelated;
+  border: var(--pixel-half) solid var(--c-noche);
+  background: var(--c-pampa);
+  box-shadow: var(--pixel-half) var(--pixel-half) 0 var(--c-tierra-dark);
+}
+.shop-modal__avatar--user {
+  object-position: center;
+  /* espeja al user para que "mire" hacia el comerciante */
+  transform: scaleX(-1);
+}
 .shop-modal__dialog {
   position: relative;
   background: var(--c-sol);
   border: var(--pixel-half) solid var(--c-noche);
   padding: 10px 12px;
-  margin-bottom: 14px;
   box-shadow: var(--pixel-half) var(--pixel-half) 0 var(--c-tierra-dark);
+  min-height: 80px;
+  align-self: center;
 }
 .shop-modal__dialog::before {
   content: "";
   position: absolute;
-  top: -10px;
-  left: 16px;
+  top: 50%;
+  left: -10px;
+  margin-top: -6px;
   width: 0;
   height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 10px solid var(--c-noche);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 10px solid var(--c-noche);
+}
+@media (max-width: 480px) {
+  .shop-modal__avatar { width: 56px; height: 96px; }
 }
 .shop-modal__vendor {
   display: block;

@@ -217,9 +217,16 @@
             <h3 id="shop-modal-title" class="shop-modal__title"></h3>
             <button id="shop-modal-close" class="btn btn--ghost shop-modal__close" aria-label="Cerrar">✕</button>
           </div>
-          <div class="shop-modal__dialog">
-            <span class="shop-modal__vendor" id="shop-modal-vendor">Vendedor</span>
-            <p class="shop-modal__dialog-text" id="shop-modal-dialog"></p>
+          <div class="shop-modal__scene">
+            <img class="sprite shop-modal__avatar shop-modal__avatar--vendor"
+                 src="assets/sprites/avatar-comerciante.png" alt="Comerciante" />
+            <div class="shop-modal__dialog">
+              <span class="shop-modal__vendor" id="shop-modal-vendor">Vendedor</span>
+              <p class="shop-modal__dialog-text" id="shop-modal-dialog"></p>
+            </div>
+            <img class="sprite shop-modal__avatar shop-modal__avatar--user"
+                 id="shop-modal-user-avatar"
+                 src="assets/sprites/avatar-intermedio.png" alt="Vos" />
           </div>
           <div class="shop-modal__items" id="shop-modal-items"></div>
           <button id="shop-modal-done" class="btn btn--primary">Gracias, eso es todo ▶</button>
