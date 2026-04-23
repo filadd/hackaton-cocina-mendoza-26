@@ -117,16 +117,178 @@ function wireEvents() {
   );
 }
 
-function shareResult() {
-  const txt = `🥟 El Repulgue — Acabo de cocinar ${state.recipe.count} empanadas ${state.recipe.style === "horno" ? "al horno" : "fritas"} desde ${state.province}. ¡Probalo!`;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(txt).then(() => {
-      $("#btn-share").textContent = "✓ Copiado";
-      setTimeout(() => ($("#btn-share").textContent = "📋 Compartir"), 1500);
-    });
-  } else {
-    alert(txt);
+async function shareResult() {
+  const btn = $("#btn-share");
+  const originalLabel = btn.textContent;
+  const styleLabel = state.recipe.style === "horno" ? "al horno" : "fritas";
+  const raisins = state.recipe.raisins ? " con pasitas" : "";
+  const txt = `🥟 El Repulgue — Acabo de cocinar ${state.recipe.count} empanadas ${styleLabel}${raisins} desde ${state.province}. ¡Probalo!`;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Generando…";
+
+  try {
+    const blob = await generateStoryImage();
+    const file = new File([blob], "el-repulgue.png", { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "El Repulgue", text: txt });
+      btn.textContent = "✓ Compartido";
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "el-repulgue.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).catch(() => {});
+      }
+      btn.textContent = "✓ Descargado";
+    }
+  } catch (err) {
+    if (err && err.name === "AbortError") {
+      btn.textContent = originalLabel;
+    } else {
+      console.error(err);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).catch(() => {});
+        btn.textContent = "✓ Copiado";
+      } else {
+        alert(txt);
+        btn.textContent = originalLabel;
+      }
+    }
   }
+
+  setTimeout(() => {
+    btn.textContent = originalLabel;
+    btn.disabled = false;
+  }, 1800);
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function generateStoryImage() {
+  const W = 1080;
+  const H = 1920;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+
+  // Fondo: gradiente noche → pampa
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#1a1410");
+  bg.addColorStop(0.6, "#3a2a1c");
+  bg.addColorStop(1, "#4a7a2a");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Marco pixelado (amarillo sol)
+  ctx.fillStyle = "#ffcc33";
+  const m = 28;
+  const t = 12;
+  ctx.fillRect(m, m, W - m * 2, t);
+  ctx.fillRect(m, H - m - t, W - m * 2, t);
+  ctx.fillRect(m, m, t, H - m * 2);
+  ctx.fillRect(W - m - t, m, t, H - m * 2);
+
+  // Scanlines sutiles
+  ctx.fillStyle = "rgba(0,0,0,0.18)";
+  for (let y = 0; y < H; y += 6) ctx.fillRect(0, y, W, 2);
+
+  // Asegurar fuentes cargadas
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch (_) {}
+  }
+
+  // Título
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#fff9ec";
+  ctx.font = '64px "Press Start 2P", monospace';
+  ctx.shadowColor = "#70162a";
+  ctx.shadowOffsetX = 6;
+  ctx.shadowOffsetY = 6;
+  ctx.fillText("EL REPULGUE", W / 2, 200);
+  ctx.shadowColor = "transparent";
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  ctx.font = '34px "VT323", monospace';
+  ctx.fillStyle = "#ffcc33";
+  ctx.fillText("Cocina argentina, nivel 8 bits", W / 2, 260);
+
+  // Avatar + empanada
+  try {
+    const avatar = await loadImage(avatarSrc(state.skill, state.gender));
+    const empanada = await loadImage("assets/sprites/empanada-cocida.png");
+    const avSize = 420;
+    ctx.drawImage(avatar, W / 2 - avSize / 2 - 140, 340, avSize, avSize);
+    const emSize = 300;
+    ctx.drawImage(empanada, W / 2 + 60, 460, emSize, emSize);
+  } catch (e) {
+    console.warn("No se pudo cargar sprite para la historia", e);
+  }
+
+  // Nombre + logro
+  const name = state.name || "Chef";
+  const styleLabel = state.recipe.style === "horno" ? "al horno" : "fritas";
+  const raisinsLabel = state.recipe.raisins ? " con pasitas" : "";
+
+  ctx.fillStyle = "#fff9ec";
+  ctx.font = '54px "VT323", monospace';
+  ctx.fillText(`¡${name} cocinó!`, W / 2, 900);
+
+  ctx.font = '140px "Press Start 2P", monospace';
+  ctx.fillStyle = "#ffcc33";
+  ctx.shadowColor = "#1a1410";
+  ctx.shadowOffsetX = 6;
+  ctx.shadowOffsetY = 6;
+  ctx.fillText(String(state.recipe.count), W / 2, 1080);
+  ctx.shadowColor = "transparent";
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  ctx.font = '44px "VT323", monospace';
+  ctx.fillStyle = "#fff9ec";
+  ctx.fillText(`empanadas criollas ${styleLabel}${raisinsLabel}`, W / 2, 1160);
+  ctx.fillText(`desde ${state.province}`, W / 2, 1220);
+
+  // Stats
+  ctx.font = '32px "VT323", monospace';
+  ctx.fillStyle = "#d9d2c4";
+  const stats = [
+    `Nivel: ${state.skill}`,
+    `Tiempo de juego: ${formatMs(state.timer.total)}`,
+  ];
+  if (state.celiac) stats.push("Adaptado sin TACC");
+  stats.forEach((line, i) => ctx.fillText(line, W / 2, 1320 + i * 46));
+
+  // Footer
+  ctx.font = '22px "Press Start 2P", monospace';
+  ctx.fillStyle = "#ffcc33";
+  ctx.fillText("EL REPULGUE", W / 2, 1780);
+  ctx.font = '26px "VT323", monospace';
+  ctx.fillStyle = "#d9d2c4";
+  ctx.fillText("hackaton filadd · mendoza", W / 2, 1820);
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error("toBlob devolvió null"));
+    }, "image/png");
+  });
 }
 
 function init() {
