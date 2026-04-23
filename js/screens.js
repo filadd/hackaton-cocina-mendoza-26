@@ -340,7 +340,7 @@ function openShopModal(shopId) {
   $("#shop-modal-title").textContent = shop.title;
   $("#shop-modal-vendor").textContent = shop.vendor;
   // Diálogo adaptado al lunfardo de la provincia (fallback al default del shop).
-  $("#shop-modal-dialog").textContent = vendorLine(state.province, shop.id) || shop.dialog;
+  $("#shop-modal-dialog").textContent = vendorLine(state.province, shop.id, state.gender) || shop.dialog;
 
   const itemsContainer = $("#shop-modal-items");
   itemsContainer.innerHTML = "";
@@ -396,7 +396,7 @@ function updateChecklistProgress() {
 
 // ---------- 6. Kitchen ----------
 function renderKitchen() {
-  $("#kitchen-bubble").textContent = kitchenVibe(state.province, state.skill);
+  $("#kitchen-bubble").textContent = kitchenVibe(state.province, state.skill, state.gender);
   // Avatar del gaucho/gaucha según habilidad + género
   const gauchoImg = $("#kitchen-gaucho");
   if (gauchoImg) gauchoImg.src = avatarSrc(state.skill, state.gender);
@@ -552,12 +552,12 @@ function stopCooking() {
 // ---------- 8. Done ----------
 function renderDone() {
   const styleLabel = state.recipe.style === "horno" ? "al horno" : "fritas";
-  const name = state.name || "amigo/a";
+  const name = state.name || applyGender("amig{o|a}", state.gender);
   $("#done-title").textContent = `¡Bien ahí, ${name}!`;
   // Avatar hero según género + skill
   const heroImg = document.querySelector(".done-hero__avatar");
   if (heroImg) heroImg.src = avatarSrc(state.skill, state.gender);
-  $("#done-message").textContent = `Te quedaron ${state.recipe.count} empanadas ${styleLabel}${state.recipe.raisins ? " (con pasitas)" : ""}. ${doneVibe(state.province, state.skill)}`;
+  $("#done-message").textContent = `Te quedaron ${state.recipe.count} empanadas ${styleLabel}${state.recipe.raisins ? " (con pasitas)" : ""}. ${doneVibe(state.province, state.skill, state.gender)}`;
 
   const summary = $("#done-summary");
   summary.innerHTML = "";

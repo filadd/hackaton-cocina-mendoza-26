@@ -213,40 +213,48 @@ function regionForProvince(prov) {
   return REGION_BY_PROVINCE[prov] || "pampa";
 }
 
+// Reemplaza placeholders {masc|fem} por la forma según género.
+// Ej: applyGender("chang{o|a}", "f") → "changa".
+function applyGender(text, gender) {
+  if (!text) return text;
+  const pickFem = gender === "f";
+  return text.replace(/\{([^|}]*)\|([^}]*)\}/g, (_, m, f) => pickFem ? f : m);
+}
+
 // Modismos por región. La frase intermedia de done mantiene el guiño
 // "La abuela estaría orgullosa" — pedido explícito.
 const LINGO_BY_REGION = {
   pampa: {
     kitchen: {
-      basico:     "Dale campeón/a, arrancamos tranqui. Ni en pedo te apures.",
+      basico:     "Dale {campeón|campeona}, arrancamos tranqui. Ni en pedo te apures.",
       intermedio: "Bien ahí, posta. Mano firme con el cuchillo y paciencia con el repulgue.",
-      avanzado:   "Hora de lucirse, maestro/a. Corte parejo, pino jugoso, repulgue de 10.",
+      avanzado:   "Hora de lucirse, maestr{o|a}. Corte parejo, pino jugoso, repulgue de 10.",
     },
     done: {
-      basico:     "¡Primer lote al horno, posta! Ya sos un poco más argentino/a.",
+      basico:     "¡Primer lote al horno, posta! Ya sos un poco más argentin{o|a}.",
       intermedio: "Bien ahí, posta. La abuela estaría orgullosa.",
       avanzado:   "Obra de arte, de 10. Mandale foto a los pibes y a las chicas.",
     },
     vendor: {
-      carniceria: "¿Qué le doy, jefe/a?",
+      carniceria: "¿Qué le doy, {jefe|jefa}?",
       verduleria: "¡Bárbaro! Todo fresquito de esta mañana. ¿Qué lleva?",
       almacen:    "Tengo de todo, posta. ¿Qué precisás?",
     },
   },
   cordoba: {
     kitchen: {
-      basico:     "Tranqui, negro/a. Despacito. Respirá.",
-      intermedio: "Bien ahí, negro/a. Mano firme y paciencia con el repulgue, ¡viste!",
-      avanzado:   "De una, maestro/a. A sacarla barata con repulgue prolijo.",
+      basico:     "Tranqui, negr{o|a}. Despacito. Respirá.",
+      intermedio: "Bien ahí, negr{o|a}. Mano firme y paciencia con el repulgue, ¡viste!",
+      avanzado:   "De una, maestr{o|a}. A sacarla barata con repulgue prolijo.",
     },
     done: {
       basico:     "¡Primer round! Ya tenés pasaporte al fernet con empanadas.",
-      intermedio: "De 10, negro/a. La abuela estaría orgullosa.",
+      intermedio: "De 10, negr{o|a}. La abuela estaría orgullosa.",
       avanzado:   "¡Epa! Joya, ¿viste? Subile a las redes.",
     },
     vendor: {
       carniceria: "¡Epa! ¿Qué llevás hoy?",
-      verduleria: "Todo fresquito, negro/a. ¿Qué buscás?",
+      verduleria: "Todo fresquito, negr{o|a}. ¿Qué buscás?",
       almacen:    "Sentate tranqui, acá hay de todo.",
     },
   },
@@ -257,29 +265,29 @@ const LINGO_BY_REGION = {
       avanzado:   "A sacarla, che. Corte a cuchillo parejo y repulgue prolijo.",
     },
     done: {
-      basico:     "¡Primer tanda lista, bo! Ya sos un poco más cuyano/a.",
-      intermedio: "Bien ahí, cuyano/a. La abuela estaría orgullosa.",
+      basico:     "¡Primer tanda lista, bo! Ya sos un poco más cuyan{o|a}.",
+      intermedio: "Bien ahí, cuyan{o|a}. La abuela estaría orgullosa.",
       avanzado:   "Joyita, che. Ahora a acompañar con un Malbec.",
     },
     vendor: {
       carniceria: "Buenas, bo. ¿Qué le doy?",
       verduleria: "Todo fresquito de la finca, recién cosechado. ¿Qué precisa?",
-      almacen:    "Tengo todo lo que precise, don/doña.",
+      almacen:    "Tengo todo lo que precise, {don|doña}.",
     },
   },
   noa: {
     kitchen: {
-      basico:     "Despacito, chango/a. Ni en pedo te apures.",
+      basico:     "Despacito, chang{o|a}. Ni en pedo te apures.",
       intermedio: "Joyita. Mano firme con el cuchillo, mirá vos.",
-      avanzado:   "Hermoso chango/a. Que salgan como las de allá, salteñas de verdad.",
+      avanzado:   "{Hermoso|Hermosa} chang{o|a}. Que salgan como las de allá, salteñas de verdad.",
     },
     done: {
-      basico:     "¡Tu primera tanda, chango/a! Ya sos un poco más del norte.",
+      basico:     "¡Tu primera tanda, chang{o|a}! Ya sos un poco más del norte.",
       intermedio: "Joyita, guay. La abuela estaría orgullosa.",
-      avanzado:   "¡Mira vos! Obra de arte, chango/a. Subile a las redes.",
+      avanzado:   "¡Mira vos! Obra de arte, chang{o|a}. Subile a las redes.",
     },
     vendor: {
-      carniceria: "Buenas, chango/a. ¿Qué va a llevar?",
+      carniceria: "Buenas, chang{o|a}. ¿Qué va a llevar?",
       verduleria: "Todo del valle, recién traído. ¿Qué le busco?",
       almacen:    "Le tengo de todo, guay. ¿Qué precisa?",
     },
@@ -298,14 +306,14 @@ const LINGO_BY_REGION = {
     vendor: {
       carniceria: "¿Qué llevás, che?",
       verduleria: "¡Todo fresquito! ¿Qué buscás?",
-      almacen:    "Le tengo de todo, don/doña.",
+      almacen:    "Le tengo de todo, {don|doña}.",
     },
   },
   patagonia: {
     kitchen: {
       basico:     "Dale tranqui, che. Ni en pedo te apures.",
       intermedio: "De una. Mano firme con el cuchillo y paciencia.",
-      avanzado:   "A sacarla, maestro/a. Corte parejo y repulgue al toque.",
+      avanzado:   "A sacarla, maestr{o|a}. Corte parejo y repulgue al toque.",
     },
     done: {
       basico:     "¡Primer lote! Ya sos del sur, che.",
@@ -320,18 +328,22 @@ const LINGO_BY_REGION = {
   },
 };
 
-// Getters con fallback a pampa (default) si la región no tiene la frase.
-function kitchenVibe(province, skill) {
+// Getters con fallback a pampa si la región no tiene la frase.
+// El resultado pasa por applyGender para resolver los placeholders {m|f}.
+function kitchenVibe(province, skill, gender) {
   const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
-  return (reg.kitchen && reg.kitchen[skill]) || LINGO_BY_REGION.pampa.kitchen[skill] || "¡A cocinar!";
+  const raw = (reg.kitchen && reg.kitchen[skill]) || LINGO_BY_REGION.pampa.kitchen[skill] || "¡A cocinar!";
+  return applyGender(raw, gender);
 }
-function doneVibe(province, skill) {
+function doneVibe(province, skill, gender) {
   const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
-  return (reg.done && reg.done[skill]) || LINGO_BY_REGION.pampa.done[skill] || "";
+  const raw = (reg.done && reg.done[skill]) || LINGO_BY_REGION.pampa.done[skill] || "";
+  return applyGender(raw, gender);
 }
-function vendorLine(province, shopId) {
+function vendorLine(province, shopId, gender) {
   const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
-  return (reg.vendor && reg.vendor[shopId]) || LINGO_BY_REGION.pampa.vendor[shopId] || "";
+  const raw = (reg.vendor && reg.vendor[shopId]) || LINGO_BY_REGION.pampa.vendor[shopId] || "";
+  return applyGender(raw, gender);
 }
 
 // Comercios para agrupar la lista de compras. Cada uno sabe qué
