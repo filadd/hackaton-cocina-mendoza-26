@@ -118,7 +118,7 @@ function wireEvents() {
 }
 
 function shareResult() {
-  const txt = `🥟 Empanada Quest — Acabo de cocinar ${state.recipe.count} empanadas ${state.recipe.style === "horno" ? "al horno" : "fritas"} desde ${state.province}. ¡Probalo!`;
+  const txt = `🥟 El Repulgue — Acabo de cocinar ${state.recipe.count} empanadas ${state.recipe.style === "horno" ? "al horno" : "fritas"} desde ${state.province}. ¡Probalo!`;
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(txt).then(() => {
       $("#btn-share").textContent = "✓ Copiado";
