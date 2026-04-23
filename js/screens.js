@@ -339,7 +339,8 @@ function openShopModal(shopId) {
   $("#shop-modal-bg").style.backgroundImage = `url(${shop.bg})`;
   $("#shop-modal-title").textContent = shop.title;
   $("#shop-modal-vendor").textContent = shop.vendor;
-  $("#shop-modal-dialog").textContent = shop.dialog;
+  // Diálogo adaptado al lunfardo de la provincia (fallback al default del shop).
+  $("#shop-modal-dialog").textContent = vendorLine(state.province, shop.id) || shop.dialog;
 
   const itemsContainer = $("#shop-modal-items");
   itemsContainer.innerHTML = "";
@@ -395,7 +396,7 @@ function updateChecklistProgress() {
 
 // ---------- 6. Kitchen ----------
 function renderKitchen() {
-  $("#kitchen-bubble").textContent = KITCHEN_VIBE[state.skill] || "¡A cocinar!";
+  $("#kitchen-bubble").textContent = kitchenVibe(state.province, state.skill);
   // Avatar del gaucho/gaucha según habilidad + género
   const gauchoImg = $("#kitchen-gaucho");
   if (gauchoImg) gauchoImg.src = avatarSrc(state.skill, state.gender);
@@ -556,7 +557,7 @@ function renderDone() {
   // Avatar hero según género + skill
   const heroImg = document.querySelector(".done-hero__avatar");
   if (heroImg) heroImg.src = avatarSrc(state.skill, state.gender);
-  $("#done-message").textContent = `Te quedaron ${state.recipe.count} empanadas ${styleLabel}${state.recipe.raisins ? " (con pasitas)" : ""}. ${DONE_VIBE[state.skill] || ""}`;
+  $("#done-message").textContent = `Te quedaron ${state.recipe.count} empanadas ${styleLabel}${state.recipe.raisins ? " (con pasitas)" : ""}. ${doneVibe(state.province, state.skill)}`;
 
   const summary = $("#done-summary");
   summary.innerHTML = "";

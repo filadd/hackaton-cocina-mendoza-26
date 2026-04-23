@@ -193,19 +193,146 @@ const WHOLESALE_TIPS = {
   "Salta":    "Mercado San Miguel: especias del norte a precio de mercado, no de súper.",
 };
 
-// Mensajes de la cocina según habilidad.
-const KITCHEN_VIBE = {
-  basico:     "Arrancamos tranquilos. Respirá, leé cada paso, no hay apuro.",
-  intermedio: "Ya sabés lo tuyo — mano firme con el cuchillo y paciencia con el repulgue.",
-  avanzado:   "Hora de lucirse. Corte a cuchillo parejo, pino jugoso, repulgue prolijo.",
+// ---------- Lunfardo por región ----------
+// Cada provincia se agrupa en una región con modismos distintos. Si la región
+// no tiene la frase específica, se cae al default.
+const REGION_BY_PROVINCE = {
+  "Buenos Aires": "pampa", "CABA": "pampa", "Santa Fe": "pampa",
+  "Entre Ríos": "pampa", "La Pampa": "pampa",
+  "Córdoba": "cordoba",
+  "Mendoza": "cuyo", "San Juan": "cuyo", "San Luis": "cuyo",
+  "Jujuy": "noa", "Salta": "noa", "Tucumán": "noa",
+  "Catamarca": "noa", "La Rioja": "noa", "Santiago del Estero": "noa",
+  "Corrientes": "litoral", "Misiones": "litoral",
+  "Formosa": "litoral", "Chaco": "litoral",
+  "Neuquén": "patagonia", "Río Negro": "patagonia",
+  "Chubut": "patagonia", "Santa Cruz": "patagonia", "Tierra del Fuego": "patagonia",
 };
 
-// Mensaje final según habilidad.
-const DONE_VIBE = {
-  basico:     "¡Primer lote hecho! Ya sos un poquito más argentino/a.",
-  intermedio: "Bien ahí. La abuela estaría orgullosa.",
-  avanzado:   "Obra de arte. Mandales foto a tus amigos.",
+function regionForProvince(prov) {
+  return REGION_BY_PROVINCE[prov] || "pampa";
+}
+
+// Modismos por región. La frase intermedia de done mantiene el guiño
+// "La abuela estaría orgullosa" — pedido explícito.
+const LINGO_BY_REGION = {
+  pampa: {
+    kitchen: {
+      basico:     "Dale campeón/a, arrancamos tranqui. Ni en pedo te apures.",
+      intermedio: "Bien ahí, posta. Mano firme con el cuchillo y paciencia con el repulgue.",
+      avanzado:   "Hora de lucirse, maestro/a. Corte parejo, pino jugoso, repulgue de 10.",
+    },
+    done: {
+      basico:     "¡Primer lote al horno, posta! Ya sos un poco más argentino/a.",
+      intermedio: "Bien ahí, posta. La abuela estaría orgullosa.",
+      avanzado:   "Obra de arte, de 10. Mandale foto a los pibes y a las chicas.",
+    },
+    vendor: {
+      carniceria: "¿Qué le doy, jefe/a?",
+      verduleria: "¡Bárbaro! Todo fresquito de esta mañana. ¿Qué lleva?",
+      almacen:    "Tengo de todo, posta. ¿Qué precisás?",
+    },
+  },
+  cordoba: {
+    kitchen: {
+      basico:     "Tranqui, negro/a. Despacito. Respirá.",
+      intermedio: "Bien ahí, negro/a. Mano firme y paciencia con el repulgue, ¡viste!",
+      avanzado:   "De una, maestro/a. A sacarla barata con repulgue prolijo.",
+    },
+    done: {
+      basico:     "¡Primer round! Ya tenés pasaporte al fernet con empanadas.",
+      intermedio: "De 10, negro/a. La abuela estaría orgullosa.",
+      avanzado:   "¡Epa! Joya, ¿viste? Subile a las redes.",
+    },
+    vendor: {
+      carniceria: "¡Epa! ¿Qué llevás hoy?",
+      verduleria: "Todo fresquito, negro/a. ¿Qué buscás?",
+      almacen:    "Sentate tranqui, acá hay de todo.",
+    },
+  },
+  cuyo: {
+    kitchen: {
+      basico:     "Dale nomás, tranqui. Ni en pedo te apures.",
+      intermedio: "Qué hacé, bo. Mano firme con el cuchillo y paciencia.",
+      avanzado:   "A sacarla, che. Corte a cuchillo parejo y repulgue prolijo.",
+    },
+    done: {
+      basico:     "¡Primer tanda lista, bo! Ya sos un poco más cuyano/a.",
+      intermedio: "Bien ahí, cuyano/a. La abuela estaría orgullosa.",
+      avanzado:   "Joyita, che. Ahora a acompañar con un Malbec.",
+    },
+    vendor: {
+      carniceria: "Buenas, bo. ¿Qué le doy?",
+      verduleria: "Todo fresquito de la finca, recién cosechado. ¿Qué precisa?",
+      almacen:    "Tengo todo lo que precise, don/doña.",
+    },
+  },
+  noa: {
+    kitchen: {
+      basico:     "Despacito, chango/a. Ni en pedo te apures.",
+      intermedio: "Joyita. Mano firme con el cuchillo, mirá vos.",
+      avanzado:   "Hermoso chango/a. Que salgan como las de allá, salteñas de verdad.",
+    },
+    done: {
+      basico:     "¡Tu primera tanda, chango/a! Ya sos un poco más del norte.",
+      intermedio: "Joyita, guay. La abuela estaría orgullosa.",
+      avanzado:   "¡Mira vos! Obra de arte, chango/a. Subile a las redes.",
+    },
+    vendor: {
+      carniceria: "Buenas, chango/a. ¿Qué va a llevar?",
+      verduleria: "Todo del valle, recién traído. ¿Qué le busco?",
+      almacen:    "Le tengo de todo, guay. ¿Qué precisa?",
+    },
+  },
+  litoral: {
+    kitchen: {
+      basico:     "Tranqui, che. Ni en pedo te apures.",
+      intermedio: "Mirá vos. Mano firme con el cuchillo, paciencia con el repulgue.",
+      avanzado:   "De una, che. Corte parejo, pino jugoso.",
+    },
+    done: {
+      basico:     "¡Primer tanda! Ya entrás al club.",
+      intermedio: "Bárbaro, che. La abuela estaría orgullosa.",
+      avanzado:   "Joya. Mandale foto a los primos de Paraguay.",
+    },
+    vendor: {
+      carniceria: "¿Qué llevás, che?",
+      verduleria: "¡Todo fresquito! ¿Qué buscás?",
+      almacen:    "Le tengo de todo, don/doña.",
+    },
+  },
+  patagonia: {
+    kitchen: {
+      basico:     "Dale tranqui, che. Ni en pedo te apures.",
+      intermedio: "De una. Mano firme con el cuchillo y paciencia.",
+      avanzado:   "A sacarla, maestro/a. Corte parejo y repulgue al toque.",
+    },
+    done: {
+      basico:     "¡Primer lote! Ya sos del sur, che.",
+      intermedio: "De una, che. La abuela estaría orgullosa.",
+      avanzado:   "Impecable. Mandale foto a los del norte para que aprendan.",
+    },
+    vendor: {
+      carniceria: "¿Qué le doy, che?",
+      verduleria: "Todo lo del día, che. ¿Qué precisa?",
+      almacen:    "Acá hay de todo, pasale tranqui.",
+    },
+  },
 };
+
+// Getters con fallback a pampa (default) si la región no tiene la frase.
+function kitchenVibe(province, skill) {
+  const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
+  return (reg.kitchen && reg.kitchen[skill]) || LINGO_BY_REGION.pampa.kitchen[skill] || "¡A cocinar!";
+}
+function doneVibe(province, skill) {
+  const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
+  return (reg.done && reg.done[skill]) || LINGO_BY_REGION.pampa.done[skill] || "";
+}
+function vendorLine(province, shopId) {
+  const reg = LINGO_BY_REGION[regionForProvince(province)] || LINGO_BY_REGION.pampa;
+  return (reg.vendor && reg.vendor[shopId]) || LINGO_BY_REGION.pampa.vendor[shopId] || "";
+}
 
 // Comercios para agrupar la lista de compras. Cada uno sabe qué
 // ingredientes vende (match por label con RECIPE_EMPANADAS.ingredients).
