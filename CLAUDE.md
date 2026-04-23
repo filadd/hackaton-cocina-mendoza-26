@@ -37,11 +37,17 @@ Script load order in `index.html` matters: `data.js → state.js → scaling.js 
 
 `renderCooking` stores step durations in the module-local `cookingDurations`, then starts a `setInterval(100ms)` that advances `state.timer.elapsed` by the real delta since the last tick (so `paused` freezes without drift). When `elapsed` crosses a step boundary, the previous step is marked `.is-done` and the next one gets `.is-current`. `skipStep()` advances `elapsed` to the end of the current step; the next tick auto-advances the UI. `stopCooking()` clears the interval and is called on replay and back-navigation.
 
-### Sprites
+### Sprites and shop backgrounds
 
-Sprites come from two spritesheets (`assets/assets.png` masculine, `assets/assets_woman.png` feminine, both 2816×1536) that were sliced into `assets/sprites/*.png` via Python PIL using hand-picked pixel coordinates. The canonical list lives in the extraction block in the conversation history; for new sprites, use PIL + `image.crop((x1, y1, x2, y2))` and save with `optimize=True`. Avatars follow the pattern `avatar-{basico|intermedio|avanzado}[-f].png`; `avatarSrc(skill, gender)` in `screens.js` is the single place that builds that path — always route through it.
+Character/item sprites live in `assets/sprites/*.png`, individually sliced from 2816×1536 spritesheets via Python PIL (those spritesheets are no longer in-repo). For new sprites, use PIL + `image.crop((x1, y1, x2, y2))` + `save(..., optimize=True)`. Avatars follow the pattern `avatar-{basico|intermedio|avanzado}[-f].png`; `avatarSrc(skill, gender)` in `screens.js` is the single place that builds that path — always route through it.
+
+Shop backgrounds (`assets/carnage.png`, `assets/greengrocery.png`, `assets/kitchen.png`) are full-size illustrations used as the modal background on the checklist screen. Each `SHOPS[i].bg` in `data.js` points to one.
 
 `INGREDIENT_SPRITES`, `UTENSIL_SPRITES` and `STEP_SPRITES` in `screens.js` map recipe labels / step indices to sprite basenames. Ingredients without a sprite (condimentos) fall back to a `•` dot.
+
+### Shopping checklist (`renderChecklist`)
+
+The checklist groups ingredients by shop (`SHOPS` in `data.js`: `carniceria`, `verduleria`, `almacen`). Each shop card in the screen opens a modal (`#shop-modal`) whose background is the shop image and whose content is the subset of ingredients whose `label` appears in `shop.ingredients`. `state.shopping` is still the flat `{ingredientKey: boolean}` map — the shop view re-derives completion from it. `updateChecklistProgress()` is what gates the "A la cocina" button based on the global count.
 
 ## Visual language ("8 bits gaucho")
 

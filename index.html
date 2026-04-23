@@ -54,9 +54,17 @@
 
         <div class="field">
           <span class="field__label">¿Con qué avatar jugás?</span>
-          <div class="radio-group" id="gender-group">
-            <label class="radio"><input type="radio" name="gender" value="m" /><span>🧔 Él</span></label>
-            <label class="radio"><input type="radio" name="gender" value="f" /><span>👩 Ella</span></label>
+          <div class="gender-cards" id="gender-group">
+            <label class="gender-card">
+              <input type="radio" name="gender" value="f" />
+              <img src="assets/sprites/avatar-intermedio-f.png" alt="Ella" class="sprite gender-card__sprite" />
+              <span class="gender-card__label">Ella</span>
+            </label>
+            <label class="gender-card">
+              <input type="radio" name="gender" value="m" />
+              <img src="assets/sprites/avatar-intermedio.png" alt="Él" class="sprite gender-card__sprite" />
+              <span class="gender-card__label">Él</span>
+            </label>
           </div>
         </div>
 
@@ -183,23 +191,40 @@
         </div>
       </section>
 
-      <!-- 5. Shopping checklist -->
+      <!-- 5. Shopping checklist (agrupado por comercio) -->
       <section class="screen screen--checklist" data-screen="checklist">
         <h2 class="screen__title">Lista de compras</h2>
-        <p class="screen__sub">Tildá a medida que vayas consiguiendo las cosas.</p>
+        <p class="screen__sub">Visitá cada comercio para conseguir lo que falta.</p>
 
         <div class="progress">
           <div id="progress-bar" class="progress__bar"></div>
           <span id="progress-label" class="progress__label">0 / 0</span>
         </div>
 
-        <div id="checklist" class="checklist"></div>
+        <div id="shops-list" class="shops-list"></div>
 
         <div class="nav-row">
           <button class="btn btn--ghost" data-back="shopping">◀ Volver</button>
           <button id="btn-to-kitchen" class="btn btn--primary" disabled>A la cocina ▶</button>
         </div>
       </section>
+
+      <!-- Modal de comercio -->
+      <div class="shop-modal is-hidden" id="shop-modal" aria-hidden="true">
+        <div class="shop-modal__bg" id="shop-modal-bg"></div>
+        <div class="shop-modal__panel">
+          <div class="shop-modal__header">
+            <h3 id="shop-modal-title" class="shop-modal__title"></h3>
+            <button id="shop-modal-close" class="btn btn--ghost shop-modal__close" aria-label="Cerrar">✕</button>
+          </div>
+          <div class="shop-modal__dialog">
+            <span class="shop-modal__vendor" id="shop-modal-vendor">Vendedor</span>
+            <p class="shop-modal__dialog-text" id="shop-modal-dialog"></p>
+          </div>
+          <div class="shop-modal__items" id="shop-modal-items"></div>
+          <button id="shop-modal-done" class="btn btn--primary">Gracias, eso es todo ▶</button>
+        </div>
+      </div>
 
       <!-- 6. Kitchen -->
       <section class="screen screen--kitchen" data-screen="kitchen">

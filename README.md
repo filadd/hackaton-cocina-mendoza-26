@@ -32,7 +32,11 @@ No hay build step ni dependencias — es HTML + CSS + JS puro.
    Ottonello, Il Bambino) con precios estimados y destaque ⭐ por provincia,
    recomendaciones de corte de carne según skill, tip de mayorista, y soporte
    para adaptación sin TACC si hay comensales celíacos.
-5. **Checklist**: tildá lo que vayas consiguiendo; barra de progreso.
+5. **Checklist**: la lista está agrupada en tres comercios (**Carnicería**,
+   **Verdulería**, **Pulpería/Almacén**). Cada uno abre un modal con el fondo
+   del local, diálogo del vendedor y solo sus ingredientes. Barra de progreso
+   global; el botón "A la cocina" se habilita cuando los tres comercios
+   están completos.
 6. **Cocina**: tu avatar aparece en escena junto a los utensilios (tabla,
    cuchillo, olla, bowl, sartén, fuego) y un mensaje adaptado al skill.
 7. **Paso a paso con timer**: 30 s base × `max(0.5, count/24)` × `factor_habilidad`
@@ -59,9 +63,10 @@ navegador, arranca recién con la primera interacción del usuario.
 │   ├── screens.js         # render de cada pantalla
 │   └── music.js           # audio milonga/cumbia, volumen, mute, persistencia
 ├── assets/
-│   ├── assets.png         # spritesheet masculino (fuente)
-│   ├── assets_woman.png   # spritesheet femenino (fuente)
-│   └── sprites/           # PNGs individuales extraídos (avatares, ingredientes,
+│   ├── carnage.png        # fondo carnicería (modal checklist)
+│   ├── greengrocery.png   # fondo verdulería (modal checklist)
+│   ├── kitchen.png        # fondo pulpería/almacén (modal checklist)
+│   └── sprites/           # PNGs individuales de sprites (avatares m/f, ingredientes,
 │                          #   utensilios, empanadas, mapa, pergamino, botón)
 └── music/
     ├── milonga.mp3

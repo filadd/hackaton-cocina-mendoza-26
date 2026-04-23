@@ -206,3 +206,59 @@ const DONE_VIBE = {
   intermedio: "Bien ahí. La abuela estaría orgullosa.",
   avanzado:   "Obra de arte. Mandales foto a tus amigos.",
 };
+
+// Comercios para agrupar la lista de compras. Cada uno sabe qué
+// ingredientes vende (match por label con RECIPE_EMPANADAS.ingredients).
+const SHOPS = [
+  {
+    id: "carniceria",
+    name: "Carnicería",
+    title: "Carnicería El Facón",
+    bg: "assets/carnage.png",
+    vendor: "Carnicero",
+    dialog: "Buenas, ¿qué le doy hoy?",
+    icon: "ing-carne",
+    ingredients: [
+      "Carne vacuna (cortada a cuchillo)",
+      "Grasa vacuna (o aceite)",
+    ],
+  },
+  {
+    id: "verduleria",
+    name: "Verdulería",
+    title: "Verdulería El Campo",
+    bg: "assets/greengrocery.png",
+    vendor: "Verdulero",
+    dialog: "¡Todo fresquito de esta mañana! ¿Qué lleva?",
+    icon: "ing-verdeo",
+    ingredients: [
+      "Cebolla blanca",
+      "Cebolla de verdeo",
+      "Huevos duros",
+      "Huevo (para pincelar)",
+    ],
+  },
+  {
+    id: "almacen",
+    name: "Almacén",
+    title: "Pulpería · Almacén de campo",
+    bg: "assets/kitchen.png",
+    vendor: "Almacenero",
+    dialog: "Tengo de todo, don. ¿Qué precisa?",
+    icon: "ing-tapas",
+    ingredients: [
+      "Aceitunas verdes sin carozo",
+      "Pasas de uva",
+      "Tapas de empanada",
+      "Comino",
+      "Pimentón dulce",
+      "Ají molido",
+      "Sal",
+      "Pimienta negra",
+    ],
+  },
+];
+
+function shopForIngredient(label) {
+  return SHOPS.find((s) => s.ingredients.includes(label)) || null;
+}

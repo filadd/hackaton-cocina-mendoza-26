@@ -81,6 +81,12 @@ function wireEvents() {
 
   // Checklist
   $("#btn-to-kitchen").addEventListener("click", () => showScreen("kitchen"));
+  $("#shop-modal-close").addEventListener("click", closeShopModal);
+  $("#shop-modal-done").addEventListener("click", closeShopModal);
+  // Click fuera del panel cierra también
+  $("#shop-modal").addEventListener("click", (e) => {
+    if (e.target.id === "shop-modal") closeShopModal();
+  });
 
   // Kitchen
   $("#btn-start-cooking").addEventListener("click", () => showScreen("cooking"));

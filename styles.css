@@ -171,6 +171,47 @@ img, .sprite {
   margin-top: 6px;
 }
 
+/* ---------- Gender cards ---------- */
+.gender-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.gender-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background: var(--c-facon);
+  border: var(--pixel) solid var(--c-noche);
+  box-shadow: var(--pixel) var(--pixel) 0 var(--c-tierra-dark);
+  cursor: pointer;
+  transition: transform 120ms steps(2);
+}
+.gender-card:hover { background: var(--c-cielo); }
+.gender-card input { position: absolute; opacity: 0; pointer-events: none; }
+.gender-card__sprite {
+  width: 80px;
+  height: 80px;
+  image-rendering: pixelated;
+  border: 2px solid var(--c-noche);
+  background: var(--c-pampa);
+}
+.gender-card__label {
+  margin-top: 6px;
+  font-family: var(--font-title);
+  font-size: 10px;
+  color: var(--c-tierra-dark);
+}
+.gender-card.is-selected {
+  background: var(--c-sol);
+  transform: translate(var(--pixel-half), var(--pixel-half));
+  box-shadow: var(--pixel-half) var(--pixel-half) 0 var(--c-poncho-dark);
+  outline: var(--pixel) solid var(--c-poncho);
+}
+.gender-card.is-selected .gender-card__sprite { border-color: var(--c-poncho); }
+
 /* ---------- Skill cards (avatares) ---------- */
 .skill-cards {
   display: grid;
@@ -623,6 +664,156 @@ img, .sprite {
   text-shadow: 1px 1px 0 var(--c-noche);
 }
 
+/* ---------- Shops list ---------- */
+.shops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.shop-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  background: var(--c-facon);
+  border: var(--pixel) solid var(--c-noche);
+  box-shadow: var(--pixel) var(--pixel) 0 var(--c-tierra-dark);
+}
+.shop-card.is-complete {
+  background: var(--c-pampa);
+  color: var(--c-blanco);
+  box-shadow: var(--pixel) var(--pixel) 0 var(--c-pampa-dark);
+}
+.shop-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.shop-card__icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.shop-card__name {
+  font-family: var(--font-title);
+  font-size: 11px;
+  color: var(--c-poncho);
+  margin-bottom: 4px;
+}
+.shop-card.is-complete .shop-card__name { color: var(--c-blanco); }
+.shop-card__progress {
+  font-family: var(--font-title);
+  font-size: 9px;
+  color: var(--c-gris);
+}
+.shop-card.is-complete .shop-card__progress { color: var(--c-sol); }
+.shop-card__go {
+  padding: 10px 14px;
+  font-size: 10px;
+}
+@media (max-width: 480px) {
+  .shop-card { grid-template-columns: 1fr; }
+  .shop-card__go { width: 100%; }
+}
+
+/* ---------- Shop modal ---------- */
+.shop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.shop-modal.is-hidden { display: none; }
+.shop-modal__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+.shop-modal__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 20, 16, 0.65);
+}
+.shop-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--c-blanco);
+  border: var(--pixel) solid var(--c-noche);
+  box-shadow: var(--pixel) var(--pixel) 0 var(--c-poncho-dark);
+  padding: 16px;
+  color: var(--c-noche);
+}
+.shop-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: var(--pixel-half) dashed var(--c-tierra);
+}
+.shop-modal__title {
+  font-family: var(--font-title);
+  font-size: 12px;
+  color: var(--c-poncho);
+  flex: 1;
+}
+.shop-modal__close {
+  padding: 6px 10px !important;
+  font-size: 10px;
+}
+.shop-modal__dialog {
+  position: relative;
+  background: var(--c-sol);
+  border: var(--pixel-half) solid var(--c-noche);
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--pixel-half) var(--pixel-half) 0 var(--c-tierra-dark);
+}
+.shop-modal__dialog::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid var(--c-noche);
+}
+.shop-modal__vendor {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 9px;
+  color: var(--c-tierra-dark);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.shop-modal__dialog-text {
+  font-size: 20px;
+  color: var(--c-noche);
+  font-style: italic;
+}
+.shop-modal__items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+/* ---------- Checklist (legacy compatible) ---------- */
 .checklist {
   display: flex;
   flex-direction: column;

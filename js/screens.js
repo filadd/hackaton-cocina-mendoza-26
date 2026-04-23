@@ -113,8 +113,12 @@ function highlightProvince(prov) {
 function updateWelcomeButton() {
   const ready = state.name.trim() && state.province && state.skill && state.gender;
   $("#btn-to-recipe").disabled = !ready;
-  // Marcar la card del skill seleccionado
+  // Marcar las cards de skill y género seleccionadas
   $$(".skill-card").forEach((card) => {
+    const input = card.querySelector("input");
+    card.classList.toggle("is-selected", !!input && input.checked);
+  });
+  $$(".gender-card").forEach((card) => {
     const input = card.querySelector("input");
     card.classList.toggle("is-selected", !!input && input.checked);
   });
@@ -279,41 +283,105 @@ function renderShopping() {
   ));
 }
 
-// ---------- 5. Checklist ----------
+// ---------- 5. Checklist (agrupado por comercio) ----------
+// state.shopping guarda { [ing.key]: boolean }. Re-derivamos por shop cada vez.
+let checklistIngredients = []; // cache para el modal
+
 function renderChecklist() {
-  const ingredients = scaleIngredients(state.recipe.count, {
+  checklistIngredients = scaleIngredients(state.recipe.count, {
     raisins: state.recipe.raisins,
     style: state.recipe.style,
     celiac: state.celiac,
   });
-  const container = $("#checklist");
-  container.innerHTML = "";
   state.shopping = {};
+  for (const ing of checklistIngredients) state.shopping[ing.key] = false;
 
-  for (const ing of ingredients) {
-    state.shopping[ing.key] = false;
+  renderShopsList();
+  updateChecklistProgress();
+}
+
+function renderShopsList() {
+  const container = $("#shops-list");
+  container.innerHTML = "";
+
+  for (const shop of SHOPS) {
+    const items = ingredientsForShop(shop);
+    if (!items.length) continue;
+    const doneCount = items.filter((ing) => state.shopping[ing.key]).length;
+    const complete = doneCount === items.length;
+
+    const card = el("div", { class: `shop-card ${complete ? "is-complete" : ""}` },
+      el("div", { class: "shop-card__head" },
+        spriteImg(shop.icon, shop.name, "shop-card__icon"),
+        el("div", { class: "shop-card__info" },
+          el("h3", { class: "shop-card__name" }, shop.title),
+          el("p", { class: "shop-card__progress" }, `${doneCount} / ${items.length} ${complete ? "✓" : ""}`)
+        ),
+      ),
+      el("button", {
+        class: `btn ${complete ? "btn--ghost" : "btn--primary"} shop-card__go`,
+        type: "button",
+        onclick: () => openShopModal(shop.id),
+      }, complete ? "✓ Completo · volver" : `Ir a ${shop.name.toLowerCase()} ▶`)
+    );
+    container.appendChild(card);
+  }
+}
+
+function ingredientsForShop(shop) {
+  return checklistIngredients.filter((ing) => shop.ingredients.includes(ing.label));
+}
+
+function openShopModal(shopId) {
+  const shop = SHOPS.find((s) => s.id === shopId);
+  if (!shop) return;
+
+  $("#shop-modal-bg").style.backgroundImage = `url(${shop.bg})`;
+  $("#shop-modal-title").textContent = shop.title;
+  $("#shop-modal-vendor").textContent = shop.vendor;
+  $("#shop-modal-dialog").textContent = shop.dialog;
+
+  const itemsContainer = $("#shop-modal-items");
+  itemsContainer.innerHTML = "";
+  const items = ingredientsForShop(shop);
+
+  for (const ing of items) {
     const checkbox = el("input", {
       type: "checkbox",
       "data-key": ing.key,
+      checked: state.shopping[ing.key] || false,
       onchange: (e) => {
         state.shopping[ing.key] = e.target.checked;
         e.target.closest(".check-item").classList.toggle("is-done", e.target.checked);
         updateChecklistProgress();
       },
     });
+    if (state.shopping[ing.key]) checkbox.checked = true;
+
     const spriteName = INGREDIENT_SPRITES[ing.label];
     const iconNode = spriteName
       ? spriteImg(spriteName, ing.label, "check-item__icon")
       : el("span", { class: "check-item__icon check-item__icon--dot" }, "•");
-    const item = el("label", { class: "check-item" },
+
+    const item = el("label", { class: `check-item ${state.shopping[ing.key] ? "is-done" : ""}` },
       checkbox,
       iconNode,
       el("span", { class: "check-item__qty" }, formatQty(ing)),
       el("span", { class: "check-item__label" }, ing.label + (ing.celiacNote ? ` (${ing.celiacNote})` : ""))
     );
-    container.appendChild(item);
+    itemsContainer.appendChild(item);
   }
-  updateChecklistProgress();
+
+  const modal = $("#shop-modal");
+  modal.classList.remove("is-hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeShopModal() {
+  const modal = $("#shop-modal");
+  modal.classList.add("is-hidden");
+  modal.setAttribute("aria-hidden", "true");
+  renderShopsList();
 }
 
 function updateChecklistProgress() {
