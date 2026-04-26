@@ -250,7 +250,7 @@ const LINGO_BY_REGION = {
     done: {
       basico:     "¡Primer round! Ya tenés pasaporte al fernet con empanadas.",
       intermedio: "De 10, negr{o|a}. La abuela estaría orgullosa.",
-      avanzado:   "¡Epa! Joya, ¿viste? Subile a las redes.",
+      avanzado:   "¡Epa! Joya, ¿viste? Compartilo con amigos.",
     },
     vendor: {
       carniceria: "¡Epa! ¿Qué llevás hoy?",
@@ -284,7 +284,7 @@ const LINGO_BY_REGION = {
     done: {
       basico:     "¡Tu primera tanda, chang{o|a}! Ya sos un poco más del norte.",
       intermedio: "Joyita, guay. La abuela estaría orgullosa.",
-      avanzado:   "¡Mira vos! Obra de arte, chang{o|a}. Subile a las redes.",
+      avanzado:   "¡Mira vos! Obra de arte, chang{o|a}. Compartilo con amigos.",
     },
     vendor: {
       carniceria: "Buenas, chang{o|a}. ¿Qué va a llevar?",
