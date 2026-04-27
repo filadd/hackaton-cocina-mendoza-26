@@ -117,12 +117,15 @@ function wireEvents() {
   );
 }
 
+const GAME_URL = "https://filadd.github.io/hackaton-cocina-mendoza-26/";
+
 async function shareResult() {
   const btn = $("#btn-share");
   const originalLabel = btn.textContent;
   const styleLabel = state.recipe.style === "horno" ? "al horno" : "fritas";
   const raisins = state.recipe.raisins ? " con pasitas" : "";
-  const txt = `🥟 El Repulgue — Acabo de cocinar ${state.recipe.count} empanadas ${styleLabel}${raisins} desde ${state.province}. ¡Probalo!`;
+  const txt = `🥟 El Repulgue — Acabo de cocinar ${state.recipe.count} empanadas ${styleLabel}${raisins} desde ${state.province}. ¡Probalo vos también! ${GAME_URL}`;
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(txt)}`;
 
   btn.disabled = true;
   btn.textContent = "⏳ Generando…";
@@ -143,23 +146,16 @@ async function shareResult() {
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).catch(() => {});
-      }
-      btn.textContent = "✓ Descargado";
+      window.open(waUrl, "_blank", "noopener");
+      btn.textContent = "✓ Abriendo WhatsApp";
     }
   } catch (err) {
     if (err && err.name === "AbortError") {
       btn.textContent = originalLabel;
     } else {
       console.error(err);
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).catch(() => {});
-        btn.textContent = "✓ Copiado";
-      } else {
-        alert(txt);
-        btn.textContent = originalLabel;
-      }
+      window.open(waUrl, "_blank", "noopener");
+      btn.textContent = "✓ Abriendo WhatsApp";
     }
   }
 
